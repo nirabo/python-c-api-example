@@ -1,0 +1,50 @@
+name: "CodeQL Security Analysis"
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "25 6 * * 1" # Weekly Monday at 6:25 AM UTC
+
+jobs:
+  analyze:
+    name: Analyze Code
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ["cpp", "python"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: ${{ matrix.language }}
+          queries: +security-and-quality
+
+      - name: Set up Docker for C++ analysis
+        if: matrix.language == 'cpp'
+        run: |
+          docker build -t pycapi:codeql .
+
+      - name: Build C extension for analysis
+        if: matrix.language == 'cpp'
+        run: |
+          docker run --rm -v $(pwd):/app pycapi:codeql sh -c "
+            cd /app && python setup.py build_ext --inplace
+          "
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+        with:
+          category: "/language:${{matrix.language}}"

@@ -73,3 +73,20 @@ setup-git: ## Setup git repository with pre-commit hooks
 	git init
 	uv tool install pre-commit
 	pre-commit install
+
+# CI/CD and GitHub Actions
+.PHONY: ci-test
+ci-test: ## Run CI tests locally (mimics GitHub Actions)
+	$(DOCKER_COMPOSE) build
+	$(DOCKER_COMPOSE) run --rm pycapi-dev sh -c "python setup.py build_ext --inplace && python examples/test_module.py"
+
+.PHONY: security-scan
+security-scan: ## Run security scan with Trivy
+	docker build -t pycapi:security .
+	docker run --rm -v $(PWD):/app aquasecurity/trivy fs /app
+
+.PHONY: publish-dry-run
+publish-dry-run: ## Test Docker image publishing (dry run)
+	$(DOCKER_COMPOSE) build
+	docker tag pycapi-python27 ghcr.io/$(USER)/pycapi:test
+	@echo "Would push: ghcr.io/$(USER)/pycapi:test"

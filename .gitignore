@@ -122,3 +122,11 @@ docs/_build/
 # Temporary files
 *.tmp
 *.temp
+
+# GitHub Actions
+.github/workflows/cache/
+trivy-results.sarif
+
+# CI/CD artifacts
+artifacts/
+release/

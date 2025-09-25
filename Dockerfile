@@ -43,11 +43,14 @@ WORKDIR /app
 COPY . /app
 
 # Copy built C extension from builder
-COPY --from=builder /app/*.so ./
+COPY --from=builder /app/*.so /app/
 
 # Set Python 2.7 as default and create Jupyter config
 RUN ln -sf /usr/bin/python2.7 /usr/bin/python && \
     mkdir -p /root/.jupyter
+
+# Set PYTHONPATH to include the app directory
+ENV PYTHONPATH=/app
 
 # Expose Jupyter port
 EXPOSE 8888
