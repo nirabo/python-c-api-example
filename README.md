@@ -1,6 +1,8 @@
 # Python 2.7 C-API Extension Project
 
-A complete development environment for creating Python 2.7 C extensions using the Python C-API, featuring Docker containerization and Jupyter notebook integration.
+A complete development environment for creating Python 2.7 C extensions using
+the Python C-API, featuring Docker containerization and Jupyter notebook
+integration.
 
 ## 🎯 Project Overview
 
@@ -13,7 +15,7 @@ This project demonstrates how to:
 
 ## 📁 Project Structure
 
-```
+```text
 pycapi/
 ├── src/
 │   └── example_module.c       # C extension source code
@@ -261,7 +263,9 @@ make logs      # Check container logs
 
 ## ⚠️ Python 2.7 Notice
 
-This project uses Python 2.7 for educational purposes. Python 2.7 reached end-of-life on January 1, 2020. For production use, consider migrating to Python 3.x.
+This project uses Python 2.7 for educational purposes. Python 2.7 reached
+end-of-life on January 1, 2020. For production use, consider migrating to
+Python 3.x.
 
 ## 🤝 Contributing
 
@@ -285,8 +289,8 @@ This project is for educational purposes. Feel free to use and modify as needed.
 
 - [Python C Extension Tutorial](https://docs.python.org/3/extending/extending.html)
 - [Cython](https://cython.org/) - Alternative approach to Python extensions
-- [pybind11](https://github.com/pybind/pybind11) - Modern C++ bindings for Python
+- [pybind11](https://github.com/pybind/pybind11) - Modern C++ bindings
 
 ---
 
-**Happy coding! 🚀**
+## Happy coding! 🚀
