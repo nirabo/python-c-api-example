@@ -93,21 +93,21 @@ repos:
   # Local hooks for project-specific checks
   - repo: local
     hooks:
-      # Check C extension builds successfully (Docker only)
+      # Check C extension builds in Docker container
       - id: check-c-extension-build
-        name: Check C extension builds
-        entry: bash -c 'echo "Skipping C extension build check on host (use Docker environment)"'
+        name: Check C extension builds in container
+        entry: docker compose run --rm pycapi-dev python setup.py build_ext --inplace
         language: system
         files: '\.(c|h)$|setup\.py$'
         pass_filenames: false
         stages: [pre-commit]
 
-      # Run basic tests (Docker only)
+      # Run tests in Docker container
       - id: run-basic-tests
-        name: Run basic tests
-        entry: bash -c 'echo "Skipping Python 2.7 tests on host (use Docker environment)"'
+        name: Run tests in container
+        entry: docker compose run --rm pycapi-dev python examples/test_module.py
         language: system
-        files: '\.py$'
+        files: '\.py$|\.c$'
         pass_filenames: false
         stages: [pre-commit]
         require_serial: true

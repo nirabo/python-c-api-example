@@ -46,11 +46,11 @@ make help
 # Start Jupyter notebook server
 make jupyter
 
-# Build and test locally (requires Python 2.7)
+# Build and test in Docker container
 make dev
 
-# Interactive Docker development
-make docker-dev
+# Interactive development shell
+make shell
 ```
 
 ### Option 2: Using Docker Compose Directly
@@ -66,17 +66,14 @@ docker compose up pycapi-build
 docker compose run --rm pycapi-dev
 ```
 
-### Option 3: Local Development
+### Option 3: Direct Commands
 
 ```bash
-# Install dependencies (Ubuntu)
-sudo apt-get install python2.7 python2.7-dev python-pip build-essential
+# Build and test in container
+docker compose up pycapi-build
 
-# Build extension
-python2.7 setup.py build_ext --inplace
-
-# Test extension
-python2.7 examples/test_module.py
+# Interactive shell
+docker compose run --rm pycapi-dev
 ```
 
 ## 🔧 Development Workflow
@@ -95,28 +92,20 @@ The notebook environment includes:
 - Interactive testing capabilities
 - Performance benchmarking tools
 
-### 2. Local Development
+### 2. Container Development
 
 ```bash
-# Quick development cycle
-make dev  # Builds and tests
+# Quick development cycle (build and test)
+make dev
 
-# Clean build artifacts
-make clean
+# Interactive development shell
+make shell
 
 # Debug import issues
 make debug
-```
 
-### 3. Container Development
-
-```bash
-# Interactive container shell
-make docker-dev
-
-# Inside container:
-python setup.py build_ext --inplace
-python examples/test_module.py
+# Performance profiling
+make profile
 ```
 
 ## 📝 C Extension API
@@ -161,29 +150,27 @@ The Docker setup provides:
 
 ## 🛠️ Makefile Targets
 
-### Development
+### Core Commands
 
-- `make build` - Build C extension locally
-- `make test` - Run test script
-- `make clean` - Clean build artifacts
-- `make dev` - Quick build and test cycle
+- `make dev` - Build and test in Docker container
+- `make jupyter` - Start Jupyter notebook server
+- `make shell` - Interactive development shell
+- `make test` - Run tests in container
+- `make debug` - Run diagnostic script
+- `make profile` - Performance profiling
 
-### Docker Operations
+### Container Management
 
-- `make jupyter` - Start Jupyter server
-- `make docker-dev` - Interactive Docker shell
-- `make docker-build-test` - Build and test in container
+- `make build` - Build Docker images
+- `make up` - Start services in background
+- `make down` - Stop containers
+- `make logs` - Show container logs
 
 ### Maintenance
 
-- `make docker-clean` - Clean Docker resources
-- `make docker-rebuild` - Full Docker rebuild
-
-### Advanced
-
-- `make profile` - Performance profiling
-- `make valgrind` - Memory debugging (requires valgrind)
-- `make gdb` - Debug with GDB
+- `make clean` - Clean build artifacts and Docker resources
+- `make rebuild` - Full rebuild of Docker images
+- `make pre-commit` - Run pre-commit hooks
 
 ## 📊 Performance Testing
 
@@ -216,8 +203,8 @@ print("Speedup: %.2fx" % (python_time / c_time))
 ### Automated Testing
 
 ```bash
-make test           # Local testing
-make docker-build-test  # Docker testing
+make test    # Run tests in container
+make dev     # Build and test in one command
 ```
 
 ### Interactive Testing
@@ -232,32 +219,31 @@ Use the Jupyter notebook `notebooks/test_capi_extension.ipynb` for:
 ### Debugging
 
 ```bash
-make debug          # Run diagnostic script
-make valgrind       # Memory checking
-make gdb           # Interactive debugging
+make debug    # Run diagnostic script in container
+make shell    # Interactive shell for manual debugging
 ```
 
 ## 🔍 Troubleshooting
 
 ### Import Errors
 
-1. Ensure the module is built: `make build`
+1. Ensure the module is built: `make dev`
 2. Check Python path: `make debug`
 3. Restart Jupyter kernel if using notebooks
 
 ### Docker Issues
 
 ```bash
-make docker-clean   # Clean Docker resources
-make docker-rebuild # Full rebuild
-make docker-ps      # Check container status
+make clean     # Clean Docker resources
+make rebuild   # Full rebuild
+make logs      # Check container logs
 ```
 
 ### Build Failures
 
-1. Check Python 2.7 installation
-2. Verify development headers are installed
-3. Check compiler (gcc) availability
+1. Check Docker installation
+2. Verify container can build: `make build`
+3. Check logs: `make logs`
 
 ## 📚 Learning Resources
 
