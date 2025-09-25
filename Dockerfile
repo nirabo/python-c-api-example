@@ -1,7 +1,7 @@
 # Multi-stage build for Python 2.7 C-API development environment
 
 # Build stage: compile and build everything
-FROM ubuntu:18.04 AS builder
+FROM ubuntu:24.04 AS builder
 
 # Install build dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -25,7 +25,7 @@ COPY setup.py .
 RUN python2.7 setup.py build_ext --inplace
 
 # Runtime stage: minimal runtime environment
-FROM ubuntu:18.04 AS runtime
+FROM ubuntu:24.04 AS runtime
 
 # Install only runtime dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
