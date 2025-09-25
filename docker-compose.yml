@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  pycapi-dev:
+    build: .
+    container_name: pycapi-python27
+    volumes:
+      - .:/app
+    working_dir: /app
+    stdin_open: true
+    tty: true
+    command: /bin/bash
+
+  pycapi-build:
+    build: .
+    container_name: pycapi-build
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: >
+      sh -c "python setup.py build_ext --inplace &&
+             python examples/test_module.py"
+
+  jupyter:
+    build: .
+    container_name: pycapi-jupyter
+    volumes:
+      - .:/app
+    working_dir: /app
+    ports:
+      - "8888:8888"
+    command: >
+      sh -c "python setup.py build_ext --inplace &&
+             jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root --notebook-dir=/app"
