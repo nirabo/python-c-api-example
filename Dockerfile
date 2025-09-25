@@ -1,35 +1,56 @@
-FROM ubuntu:18.04
+# Multi-stage build for Python 2.7 C-API development environment
 
-# Install Python 2.7 and development tools
+# Build stage: compile and build everything
+FROM ubuntu:18.04 AS builder
+
+# Install build dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python2.7 \
     python2.7-dev \
     python-pip \
+    python-setuptools \
     build-essential \
     gcc \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Jupyter and IPython for Python 2.7 (compatible versions)
-RUN pip install --no-cache-dir --upgrade pip && \
+# Upgrade pip and install Jupyter dependencies in one layer
+RUN pip install --no-cache-dir --upgrade pip==20.3.4 setuptools==44.1.1 && \
     pip install --no-cache-dir ipython==5.10.0 notebook==5.7.16 jupyter-console==5.2.0 ipykernel==4.10.1 \
     jupyter-client==5.3.5 nbconvert==5.6.1 widgetsnbextension==3.6.6
 
-# Create a working directory
+# Copy source code and build C extension
 WORKDIR /app
+COPY src/ ./src/
+COPY setup.py .
+RUN python2.7 setup.py build_ext --inplace
 
-# Copy the project files
+# Runtime stage: minimal runtime environment
+FROM ubuntu:18.04 AS runtime
+
+# Install only runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python2.7 \
+    python2.7-dev \
+    python-setuptools \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy Python packages from builder
+COPY --from=builder /usr/local/lib/python2.7/dist-packages/ /usr/local/lib/python2.7/dist-packages/
+COPY --from=builder /usr/local/bin/ /usr/local/bin/
+
+# Set up working directory and copy project files
+WORKDIR /app
 COPY . /app
 
-# Set Python 2.7 as default, create Jupyter config, and build C extension
+# Copy built C extension from builder
+COPY --from=builder /app/*.so ./
+
+# Set Python 2.7 as default and create Jupyter config
 RUN ln -sf /usr/bin/python2.7 /usr/bin/python && \
-    mkdir -p /root/.jupyter && \
-    python setup.py build_ext --inplace
+    mkdir -p /root/.jupyter
 
 # Expose Jupyter port
 EXPOSE 8888
-
-# Install any Python dependencies if needed
-# RUN pip install -r requirements.txt
 
 # Default command
 CMD ["/bin/bash"]

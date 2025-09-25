@@ -105,7 +105,7 @@ repos:
       # Run tests in Docker container (after building extension)
       - id: run-basic-tests
         name: Run tests in container
-        entry: bash -c 'docker compose run --rm pycapi-dev sh -c "python setup.py build_ext --inplace && ls -la *.so && python examples/test_module.py"'
+        entry: bash -c 'docker compose run --rm pycapi-dev sh -c "python setup.py build_ext --inplace && ls -la *.so && PYTHONPATH=/app python examples/test_module.py"'
         language: system
         files: '\.py$|\.c$'
         pass_filenames: false
