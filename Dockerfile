@@ -24,14 +24,16 @@ COPY src/ ./src/
 COPY setup.py .
 RUN python2.7 setup.py build_ext --inplace
 
-# Runtime stage: minimal runtime environment
+# Runtime stage: development environment with build tools
 FROM ubuntu:18.04 AS runtime
 
-# Install only runtime dependencies
+# Install runtime and build dependencies for development
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python2.7 \
     python2.7-dev \
     python-setuptools \
+    build-essential \
+    gcc \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy Python packages from builder

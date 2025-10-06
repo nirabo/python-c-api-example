@@ -43,8 +43,32 @@ logs: ## Show container logs
 
 # Container-based operations
 .PHONY: test
-test: ## Run tests in container
-	$(DOCKER_COMPOSE) run --rm pycapi-dev python examples/test_module.py
+test: ## Run all test suites in container
+	$(DOCKER_COMPOSE) run --rm pycapi-dev sh -c "python setup.py build_ext --inplace && python tests/run_all_tests.py"
+
+.PHONY: test-basics
+test-basics: ## Run basics_module tests
+	$(DOCKER_COMPOSE) run --rm pycapi-dev sh -c "python setup.py build_ext --inplace && python tests/test_basics_module.py"
+
+.PHONY: test-objects
+test-objects: ## Run objects_module tests
+	$(DOCKER_COMPOSE) run --rm pycapi-dev sh -c "python setup.py build_ext --inplace && python tests/test_objects_module.py"
+
+.PHONY: test-memory
+test-memory: ## Run memory_module tests
+	$(DOCKER_COMPOSE) run --rm pycapi-dev sh -c "python setup.py build_ext --inplace && python tests/test_memory_module.py"
+
+.PHONY: test-exceptions
+test-exceptions: ## Run exceptions_module tests
+	$(DOCKER_COMPOSE) run --rm pycapi-dev sh -c "python setup.py build_ext --inplace && python tests/test_exceptions_module.py"
+
+.PHONY: test-advanced
+test-advanced: ## Run advanced_module tests
+	$(DOCKER_COMPOSE) run --rm pycapi-dev sh -c "python setup.py build_ext --inplace && python tests/test_advanced_module.py"
+
+.PHONY: test-example
+test-example: ## Run original example_module test
+	$(DOCKER_COMPOSE) run --rm pycapi-dev sh -c "python setup.py build_ext --inplace && python examples/test_module.py"
 
 .PHONY: debug
 debug: ## Run diagnostic script in container
