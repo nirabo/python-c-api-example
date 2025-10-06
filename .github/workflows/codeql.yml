@@ -32,17 +32,15 @@ jobs:
           languages: ${{ matrix.language }}
           queries: +security-and-quality
 
-      - name: Set up Docker for C++ analysis
+      - name: Build Docker image for C++ analysis
         if: matrix.language == 'cpp'
         run: |
-          docker build -t pycapi:codeql .
+          docker compose build
 
       - name: Build C extension for analysis
         if: matrix.language == 'cpp'
         run: |
-          docker run --rm -v $(pwd):/app pycapi:codeql sh -c "
-            cd /app && python setup.py build_ext --inplace
-          "
+          docker compose run --rm pycapi-dev python setup.py build_ext --inplace
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
