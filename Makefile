@@ -72,7 +72,7 @@ test-example: ## Run original example_module test
 
 .PHONY: debug
 debug: ## Run diagnostic script in container
-	$(DOCKER_COMPOSE) run --rm pycapi-dev python test_import.py
+	$(DOCKER_COMPOSE) run --rm pycapi-dev python scripts/test_import.py
 
 .PHONY: profile
 profile: ## Run performance profiling in container
